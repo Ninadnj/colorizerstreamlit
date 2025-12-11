@@ -22,8 +22,9 @@ if "zoom_image" not in st.session_state:
     st.session_state.zoom_image = None
 
 
-hero_image_path = "/Users/ninadoinjashvili/code/cat_colorizer_api/7f22fd82-837d-4b8e-9e69-865f6a02ed24.png"
-logo_path = "/Users/ninadoinjashvili/code/cat_colorizer_api/logo-ae2beeecce25d711f577b08deb9adfc6c02b673ed106b8d6c3da0f1721d9da33.svg"
+
+hero_image_path = "./7f22fd82-837d-4b8e-9e69-865f6a02ed24.png"
+logo_path = "./logo-ae2beeecce25d711f577b08deb9adfc6c02b673ed106b8d6c3da0f1721d9da33.svg"
 
 if os.path.exists(hero_image_path):
     with open(hero_image_path, "rb") as f:
