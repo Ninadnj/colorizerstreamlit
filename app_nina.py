@@ -176,8 +176,10 @@ st.markdown(
         box-shadow: {shadow};
         animation: heroEntrance 1s cubic-bezier(0.4, 0, 0.2, 1);
         image-rendering: -webkit-optimize-contrast;
+        image-rendering: high-quality;
         image-rendering: crisp-edges;
-        filter: contrast(1.1) brightness(1.05);
+        filter: contrast(1.15) brightness(1.08) saturate(1.1);
+        -webkit-font-smoothing: antialiased;
     }}
 
     @keyframes heroEntrance {{
