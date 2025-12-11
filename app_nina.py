@@ -942,14 +942,14 @@ if uploaded:
     )
 
     comparison_html = f"""
-    <div style="position: relative; width: 100%; max-width: 800px; margin: 0 auto;">
+    <div style="position: relative; width: 100%; max-width: 800px; margin: 0 auto; user-select: none;">
         <div id="comparison-container" style="position: relative; width: 100%; padding-top: 100%; overflow: hidden; border-radius: 12px; box-shadow: {shadow};">
-            <img src="data:image/png;base64,{result_base64}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+            <img src="data:image/png;base64,{result_base64}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
             <div id="before-image" style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden;">
-                <img src="data:image/png;base64,{img_base64}" style="width: 200%; height: 100%; object-fit: cover;">
+                <img src="data:image/png;base64,{img_base64}" style="width: 200%; height: 100%; object-fit: cover; pointer-events: none;">
             </div>
-            <div id="slider" style="position: absolute; top: 0; left: 50%; width: 4px; height: 100%; background: white; cursor: ew-resize; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: white; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 20px;">
+            <div id="slider" style="position: absolute; top: 0; left: 50%; width: 4px; height: 100%; background: white; cursor: ew-resize; box-shadow: 0 0 10px rgba(0,0,0,0.5); z-index: 10;">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: white; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 20px; pointer-events: none;">
                     ⟷
                 </div>
             </div>
@@ -961,33 +961,68 @@ if uploaded:
     </div>
 
     <script>
-        const container = document.getElementById('comparison-container');
-        const slider = document.getElementById('slider');
-        const beforeImage = document.getElementById('before-image');
-        let isDragging = false;
+        (function() {{
+            const container = document.getElementById('comparison-container');
+            const slider = document.getElementById('slider');
+            const beforeImage = document.getElementById('before-image');
+            let isDragging = false;
 
-        function updateSlider(e) {{
-            const rect = container.getBoundingClientRect();
-            const x = (e.clientX || e.touches[0].clientX) - rect.left;
-            const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+            function updateSlider(e) {{
+                e.preventDefault();
+                const rect = container.getBoundingClientRect();
+                let x;
+                
+                if (e.type.includes('touch')) {{
+                    x = e.touches[0].clientX - rect.left;
+                }} else {{
+                    x = e.clientX - rect.left;
+                }}
+                
+                const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+                
+                slider.style.left = percentage + '%';
+                beforeImage.style.width = percentage + '%';
+            }}
 
-            slider.style.left = percentage + '%';
-            beforeImage.style.width = percentage + '%';
-        }}
+            // Mouse events
+            slider.addEventListener('mousedown', function(e) {{
+                e.preventDefault();
+                isDragging = true;
+            }});
+            
+            document.addEventListener('mouseup', function() {{
+                isDragging = false;
+            }});
+            
+            document.addEventListener('mousemove', function(e) {{
+                if (isDragging) {{
+                    updateSlider(e);
+                }}
+            }});
 
-        slider.addEventListener('mousedown', () => isDragging = true);
-        document.addEventListener('mouseup', () => isDragging = false);
-        document.addEventListener('mousemove', (e) => {{
-            if (isDragging) updateSlider(e);
-        }});
+            // Touch events
+            slider.addEventListener('touchstart', function(e) {{
+                e.preventDefault();
+                isDragging = true;
+            }}, {{ passive: false }});
+            
+            document.addEventListener('touchend', function() {{
+                isDragging = false;
+            }});
+            
+            document.addEventListener('touchmove', function(e) {{
+                if (isDragging) {{
+                    updateSlider(e);
+                }}
+            }}, {{ passive: false }});
 
-        slider.addEventListener('touchstart', () => isDragging = true);
-        document.addEventListener('touchend', () => isDragging = false);
-        document.addEventListener('touchmove', (e) => {{
-            if (isDragging) updateSlider(e);
-        }});
-
-        container.addEventListener('click', updateSlider);
+            // Click to position
+            container.addEventListener('click', function(e) {{
+                if (!isDragging) {{
+                    updateSlider(e);
+                }}
+            }});
+        }})();
     </script>
     """
 
