@@ -22,13 +22,20 @@ if "zoom_image" not in st.session_state:
     st.session_state.zoom_image = None
 
 
-hero_image_path = "./cool-cat-wearing-round-sunglasses-600nw-2580540819.webp"
+hero_image_path = "/Users/ninadoinjashvili/code/cat_colorizer_api/7f22fd82-837d-4b8e-9e69-865f6a02ed24.png"
+logo_path = "/Users/ninadoinjashvili/code/cat_colorizer_api/logo-ae2beeecce25d711f577b08deb9adfc6c02b673ed106b8d6c3da0f1721d9da33.svg"
 
 if os.path.exists(hero_image_path):
     with open(hero_image_path, "rb") as f:
         hero_bg = base64.b64encode(f.read()).decode()
 else:
     hero_bg = None
+
+if os.path.exists(logo_path):
+    with open(logo_path, "rb") as f:
+        logo_svg = base64.b64encode(f.read()).decode()
+else:
+    logo_svg = None
 
 
 dark_mode = st.session_state.dark_mode
@@ -155,9 +162,9 @@ st.markdown(
 
     /* ===================== HERO SECTION WITH GRADIENT ===================== */
     .hero-box {{
-        background: {'url(data:image/webp;base64,' + hero_bg + ')' if hero_bg else 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)' if dark_mode else 'linear-gradient(135deg, #a8edea 0%, #fed6e3 50%, #fbc2eb 100%)'};
-        background-size: cover;
-        background-position: center;
+        background: {'url(data:image/png;base64,' + hero_bg + ')' if hero_bg else 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)' if dark_mode else 'linear-gradient(135deg, #a8edea 0%, #fed6e3 50%, #fbc2eb 100%)'};
+        background-size: {'contain' if hero_bg else 'cover'};
+        background-position: center center;
         background-repeat: no-repeat;
         padding: {'120px 50px' if dark_mode else '150px 40px'};
         {'border-radius: 24px;' if dark_mode else 'border-bottom: 1px solid #eaeaea;'}
@@ -205,10 +212,14 @@ st.markdown(
         margin-bottom: {'15px' if dark_mode else '10px'};
         position: relative;
         z-index: 2;
-        color: {'#ffffff' if dark_mode else '#1a1a1a'} !important;
-        text-shadow: {'0 4px 30px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(0, 0, 0, 0.9)' if dark_mode else '0 2px 20px rgba(255, 255, 255, 0.9), 0 4px 30px rgba(255, 255, 255, 0.8), 0 1px 3px rgba(0, 0, 0, 0.3)'};
-        animation: titleFloat 3s ease-in-out infinite;
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 20%, #8B0000 60%, #DC143C 80%, #FF0000 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: none;
+        animation: titleFloat 3s ease-in-out infinite, gradientShift 8s ease infinite;
         font-weight: 700;
+        background-size: 200% 200%;
     }}
 
     @keyframes titleFloat {{
@@ -776,11 +787,14 @@ def to_png(img):
 
 # HERO HEADER
 
+logo_html = f'<img src="data:image/svg+xml;base64,{logo_svg}" style="width: 50px; height: auto; margin-top: 20px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));" alt="Le Wagon">' if logo_svg else ''
+
 st.markdown(
-    """
+    f"""
 <div class="hero-box">
     <div class="hero-title">COLORIZER</div>
     <div class="hero-sub">#BATCH2130PARIS</div>
+    {logo_html}
 </div>
 """,
     unsafe_allow_html=True,
