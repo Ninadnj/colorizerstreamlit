@@ -23,7 +23,7 @@ if "zoom_image" not in st.session_state:
 
 
 
-hero_image_path = "./7f22fd82-837d-4b8e-9e69-865f6a02ed24.png"
+hero_image_path = "/Users/ninadoinjashvili/code/cat_colorizer_api/Generated Image December 11, 2025 - 4_04PM.png"
 logo_path = "./logo-ae2beeecce25d711f577b08deb9adfc6c02b673ed106b8d6c3da0f1721d9da33.svg"
 
 if os.path.exists(hero_image_path):
@@ -975,6 +975,9 @@ if uploaded:
             <span>← ORIGINAL</span>
             <span>COLORIZED →</span>
         </div>
+        <div style="text-align: center; margin-top: 8px; font-size: 0.75rem; color: {text_secondary}; opacity: 0.7;">
+            💡 Tip: Use arrow keys ← → to control the slider
+        </div>
     </div>
 
     <script>
@@ -1039,6 +1042,39 @@ if uploaded:
                     updateSlider(e);
                 }}
             }});
+
+            // Keyboard controls (Arrow keys)
+            let currentPosition = 50; // Start at 50%
+            
+            document.addEventListener('keydown', function(e) {{
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {{
+                    e.preventDefault();
+                    
+                    // Move slider by 2% increments
+                    if (e.key === 'ArrowLeft') {{
+                        currentPosition = Math.max(0, currentPosition - 2);
+                    }} else if (e.key === 'ArrowRight') {{
+                        currentPosition = Math.min(100, currentPosition + 2);
+                    }}
+                    
+                    slider.style.left = currentPosition + '%';
+                    beforeImage.style.width = currentPosition + '%';
+                }}
+            }});
+
+            // Update currentPosition when user drags or clicks
+            const originalUpdateSlider = updateSlider;
+            updateSlider = function(e) {{
+                originalUpdateSlider(e);
+                const rect = container.getBoundingClientRect();
+                let x;
+                if (e.type.includes('touch')) {{
+                    x = e.touches[0].clientX - rect.left;
+                }} else {{
+                    x = e.clientX - rect.left;
+                }}
+                currentPosition = Math.max(0, Math.min(100, (x / rect.width) * 100));
+            }};
         }})();
     </script>
     """
