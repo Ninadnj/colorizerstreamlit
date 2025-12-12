@@ -23,7 +23,7 @@ if "zoom_image" not in st.session_state:
 
 
 
-hero_image_path = "./Generated Image December 11, 2025 - 4_04PM.png"
+hero_image_path = "/Users/ninadoinjashvili/code/cat_colorizer_api/Generated Image December 12, 2025 - 10_50AM.png"
 logo_path = "./logo-ae2beeecce25d711f577b08deb9adfc6c02b673ed106b8d6c3da0f1721d9da33.svg"
 
 if os.path.exists(hero_image_path):
